@@ -1,18 +1,13 @@
 package com.main.p12firebasestorage;
 
-import android.content.*;
-import android.graphics.*;
 import android.os.Bundle;
 
-
 import androidx.annotation.*;
-import androidx.core.content.*;
 import androidx.fragment.app.*;
 import androidx.lifecycle.*;
 import androidx.navigation.*;
 import androidx.recyclerview.widget.*;
 
-import android.text.TextUtils;
 import android.view.*;
 import android.widget.*;
 
@@ -21,9 +16,6 @@ import com.firebase.ui.firestore.*;
 import com.google.firebase.auth.*;
 import com.google.firebase.firestore.*;
 
-import java.io.*;
-import java.text.*;
-import java.util.*;
 
 
 public class HomeFragment extends Fragment {
@@ -140,10 +132,8 @@ public class HomeFragment extends Fragment {
                 authorPhotoImageView = itemView.findViewById(R.id.photoImageView);
                 mediaImageView = itemView.findViewById(R.id.mediaImage);
                 authorTextView = itemView.findViewById(R.id.authorTextView);
-                contentTextView =
-                        itemView.findViewById(R.id.contentTextView);
-                numLikesTextView =
-                        itemView.findViewById(R.id.numLikesTextView);
+                contentTextView = itemView.findViewById(R.id.contentTextView);
+                numLikesTextView = itemView.findViewById(R.id.numLikesTextView);
             }
         }
 
