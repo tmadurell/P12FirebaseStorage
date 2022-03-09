@@ -29,6 +29,8 @@ import java.util.*;
 public class HomeFragment extends Fragment {
 
     private NavController navController;
+    //P12 Firebase Storage P7
+    public AppViewModel appViewModel;
 
     public HomeFragment() {
     }
@@ -62,6 +64,10 @@ public class HomeFragment extends Fragment {
                 .build();
 
         postsRecyclerView.setAdapter(new PostsAdapter(options));
+
+        //P12 Firebase Storage P7
+        appViewModel = new ViewModelProvider(requireActivity()).get(AppViewModel.class);
+
     }
 
     // class PostsAdapter extends FirestoreRecyclerAdapter ...
@@ -105,21 +111,39 @@ public class HomeFragment extends Fragment {
                         .update("likes." + uid, post.likes.containsKey(uid) ?
                                 FieldValue.delete() : true);
             });
+            //P12 Firebase Storage P7
+            // Miniatura de media
+            if (post.mediaUrl != null) {
+                holder.mediaImageView.setVisibility(View.VISIBLE);
+                if ("audio".equals(post.mediaType)) {
+                    Glide.with(requireView()).load(R.drawable.audio).centerCrop().into(holder.mediaImageView);
+                } else {
+                    Glide.with(requireView()).load(post.mediaUrl).centerCrop().into(holder.mediaImageView);
+                }
+                holder.mediaImageView.setOnClickListener(view -> {
+                    appViewModel.postSeleccionado.setValue(post);
+                    navController.navigate(R.id.mediaFragment);
+                });
+            } else {
+                holder.mediaImageView.setVisibility(View.GONE);
+            }
         }
 
 
         //1.Gestió de Likes
         class PostViewHolder extends RecyclerView.ViewHolder {
-            ImageView authorPhotoImageView, likeImageView;
+            ImageView authorPhotoImageView, likeImageView, mediaImageView;
             TextView authorTextView, contentTextView, numLikesTextView;
-
             PostViewHolder(@NonNull View itemView) {
                 super(itemView);
-                authorPhotoImageView = itemView.findViewById(R.id.photoImageView);
                 likeImageView = itemView.findViewById(R.id.likeImageView);
+                authorPhotoImageView = itemView.findViewById(R.id.photoImageView);
+                mediaImageView = itemView.findViewById(R.id.mediaImage);
                 authorTextView = itemView.findViewById(R.id.authorTextView);
-                contentTextView = itemView.findViewById(R.id.contentTextView);
-                numLikesTextView = itemView.findViewById(R.id.numLikesTextView);
+                contentTextView =
+                        itemView.findViewById(R.id.contentTextView);
+                numLikesTextView =
+                        itemView.findViewById(R.id.numLikesTextView);
             }
         }
 
