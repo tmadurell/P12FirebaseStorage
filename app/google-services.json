@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "215029668996",
+    "project_id": "p12firebasestorage",
+    "storage_bucket": "p12firebasestorage.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:215029668996:android:92a9df09868705b8a336d1",
+        "android_client_info": {
+          "package_name": "com.main.p12firebasestorage"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "215029668996-dst7dunpo199nv7s83pj9crkdkv3esvc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBlcQPJEP5CjiXkyGLh9_NP1adO9HMTGD0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "215029668996-dst7dunpo199nv7s83pj9crkdkv3esvc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
