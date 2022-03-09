@@ -44,7 +44,8 @@ public class NewPostFragment extends Fragment {
 
     Button publishButton;
     EditText postConentEditText;
-
+    //P12 Firebase Storage P4
+    public AppViewModel appViewModel;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -59,10 +60,12 @@ public class NewPostFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        //P12 Firebase Storage P4
+        appViewModel = new ViewModelProvider(requireActivity()).get(AppViewModel.class);
+
         navController = Navigation.findNavController(view);  // <-----------------
         publishButton = view.findViewById(R.id.publishButton);
         postConentEditText = view.findViewById(R.id.postContentEditText);
-
 
         publishButton.setOnClickListener(new View.OnClickListener() {
             @Override
