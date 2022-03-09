@@ -46,6 +46,9 @@ public class NewPostFragment extends Fragment {
     EditText postConentEditText;
     //P12 Firebase Storage P4
     public AppViewModel appViewModel;
+    //P12 Firebase Storage P5
+    public Uri mediaUri;
+    public String mediaTipo;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -60,8 +63,6 @@ public class NewPostFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        //P12 Firebase Storage P4
-        appViewModel = new ViewModelProvider(requireActivity()).get(AppViewModel.class);
 
         navController = Navigation.findNavController(view);  // <-----------------
         publishButton = view.findViewById(R.id.publishButton);
@@ -73,6 +74,80 @@ public class NewPostFragment extends Fragment {
                 publicar();
             }
         });
+        //P12 Firebase Storage P4
+        appViewModel = new ViewModelProvider(requireActivity()).get(AppViewModel.class);
+
+        //P12 Firebase Storage P5
+        view.findViewById(R.id.camara_fotos).setOnClickListener(v -> tomarFoto());
+        view.findViewById(R.id.camara_video).setOnClickListener(v -> tomarVideo());
+        view.findViewById(R.id.grabar_audio).setOnClickListener(v -> grabarAudio());
+        view.findViewById(R.id.imagen_galeria).setOnClickListener(v -> seleccionarImagen());
+        view.findViewById(R.id.video_galeria).setOnClickListener(v -> seleccionarVideo());
+        view.findViewById(R.id.audio_galeria).setOnClickListener(v -> seleccionarAudio());
+        appViewModel.mediaSeleccionado.observe(getViewLifecycleOwner(), media -> {
+            this.mediaUri = media.uri;
+            this.mediaTipo = media.tipo;
+            Glide.with(this).load(media.uri).into(view.findViewById(R.id.previsualizacion));
+        });
+    }
+
+    //P12 Firebase Storage P5
+
+    private final ActivityResultLauncher<String> galeria =
+            registerForActivityResult(new ActivityResultContracts.GetContent(), uri -> {
+                appViewModel.setMediaSeleccionado(uri, mediaTipo);
+            });
+    private final ActivityResultLauncher<Uri> camaraFotos =
+            registerForActivityResult(new ActivityResultContracts.TakePicture(),
+                    isSuccess -> {
+                        appViewModel.setMediaSeleccionado(mediaUri, "image");
+                    });
+    private final ActivityResultLauncher<Uri> camaraVideos =
+            registerForActivityResult(new ActivityResultContracts.TakeVideo(), isSuccess
+                    -> {
+                appViewModel.setMediaSeleccionado(mediaUri, "video");
+            });
+    private final ActivityResultLauncher<Intent> grabadoraAudio =
+            registerForActivityResult(new
+                    ActivityResultContracts.StartActivityForResult(), result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    appViewModel.setMediaSeleccionado(result.getData().getData(),
+                            "audio");
+                }
+            });
+    private void seleccionarImagen() {
+        mediaTipo = "image";
+        galeria.launch("image/*");
+    }
+    private void seleccionarVideo() {
+        mediaTipo = "video";
+        galeria.launch("video/*");
+    }
+    private void seleccionarAudio() {
+        mediaTipo = "audio";
+        galeria.launch("audio/*");
+    }
+    private void tomarFoto() {
+        try {
+            mediaUri = FileProvider.getUriForFile(requireContext(),
+                    BuildConfig.APPLICATION_ID + ".fileprovider", File.createTempFile("img",
+                            ".jpg",
+                            requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES)));
+            camaraFotos.launch(mediaUri);
+        } catch (IOException e) {}
+    }
+    private void tomarVideo() {
+        try {
+            mediaUri = FileProvider.getUriForFile(requireContext(),
+                    BuildConfig.APPLICATION_ID + ".fileprovider", File.createTempFile("vid",
+                            ".mp4",
+                            requireContext().getExternalFilesDir(Environment.DIRECTORY_MOVIES)));
+            camaraVideos.launch(mediaUri);
+        } catch (IOException e) {}
+    }
+    private void grabarAudio() {
+        grabadoraAudio.launch(new
+                Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION));
     }
 
     private void publicar() {
