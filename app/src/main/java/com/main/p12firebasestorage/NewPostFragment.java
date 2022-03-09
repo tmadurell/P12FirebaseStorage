@@ -156,26 +156,41 @@ public class NewPostFragment extends Fragment {
             postConentEditText.setError("Required");
             return;
         }
-
         publishButton.setEnabled(false);
-
-        guardarEnFirestore(postContent);
+        if (mediaTipo == null) {
+            guardarEnFirestore(postContent, null);
+        }
+        else
+        {
+            pujaIguardarEnFirestore(postContent);
+        }
     }
 
 
-    private void guardarEnFirestore(String postContent) {
+    private void guardarEnFirestore(String postContent, String mediaUrl) {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
-        Post post = new Post(user.getUid(), user.getDisplayName(), user.getPhotoUrl().toString(), postContent);
-
+        Post post = new Post(user.getUid(), user.getDisplayName(),
+                (user.getPhotoUrl() != null ? user.getPhotoUrl().toString() :
+                        "R.drawable.user"), postContent, mediaUrl, mediaTipo);
         FirebaseFirestore.getInstance().collection("posts")
                 .add(post)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
                         navController.popBackStack();
+                        appViewModel.setMediaSeleccionado( null, null);
                     }
                 });
+    }
+    //P12 Firebase Storage P6
+    private void pujaIguardarEnFirestore(final String postText) {
+        FirebaseStorage.getInstance().getReference(mediaTipo + "/" +
+                UUID.randomUUID())
+                .putFile(mediaUri)
+                .continueWithTask(task ->
+                        task.getResult().getStorage().getDownloadUrl())
+                .addOnSuccessListener(url -> guardarEnFirestore(postText,
+                        url.toString()));
     }
 
 }
